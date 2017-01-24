@@ -21,7 +21,7 @@ class TapInHandler extends CommandHandler[TapInCommand] {
       val trip = Trip(command.cardId, command.stationId)
       DomainRegistry.tripRepository.add(trip)
 
-      println("BERHASILL TAPIN")
+      println(s"From Station: ${station.get.name}\n")
     } catch {
       case e: CannotTapInException => println(e.getMessage)
       case _: Throwable => println("Somehow cannot proceed. Noo :(")

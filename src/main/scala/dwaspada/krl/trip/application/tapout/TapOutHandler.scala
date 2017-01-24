@@ -21,7 +21,7 @@ class TapOutHandler extends CommandHandler[TapOutCommand] {
       val trip = Trip(command.cardId, command.stationId)
       DomainRegistry.tripRepository.remove(trip)
 
-      println("BERHASILL TAPOUT")
+      println(s"\nTo Station: ${station.get.name}")
     } catch {
       case e: CannotTapOutException => println(e.getMessage)
       case _: Throwable => println("Somehow cannot proceed. Noo :(")

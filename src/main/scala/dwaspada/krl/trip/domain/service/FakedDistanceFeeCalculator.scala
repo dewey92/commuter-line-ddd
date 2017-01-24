@@ -11,8 +11,7 @@ class FakedDistanceFeeCalculator extends DistanceFeeCalculator {
   def calculate(from: StationId, to: StationId): (Distance, Int) = {
     // TODO: distance calculation
     // For now, let's return a faked distance in kilometers
-    // Distance should be in Value Object, I know
-    val distance = new Distance(24.8, new LengthUnit("KM"))
+    val distance = Distance(29.8, LengthUnit("KM"))
 
     (distance, calculateFeeFromDistance(distance))
   }
@@ -21,7 +20,7 @@ class FakedDistanceFeeCalculator extends DistanceFeeCalculator {
     * When distance travelled is less than 25KM, charge Rp4.000
     * and Rp2.000 for each next 10KM
     *
-    * @param distance
+    * @param distance The distance to calculate
     * @return
     */
   def calculateFeeFromDistance(distance: Distance): Int = {
@@ -37,6 +36,6 @@ class FakedDistanceFeeCalculator extends DistanceFeeCalculator {
   private def greaterThanMinimumDistanceCalculator(distance: Double): Int = {
     val baseIteration = (distance / thresholdAfterMinimumDistanceInKM).ceil.toInt
 
-    baseIteration * feeAfterMinimumDistance
+    (baseIteration * feeAfterMinimumDistance) + feeInFirstMinimumDistance
   }
 }

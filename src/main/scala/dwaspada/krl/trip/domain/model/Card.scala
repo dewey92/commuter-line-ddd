@@ -9,8 +9,6 @@ object Card {
 }
 
 class Card(val id: CardId, var credit: Int = 0) {
-  addCredit(credit)
-
   def addCredit(nominal: Int): Unit = {
     if (nominal < 0) {
       throw new Exception("Nominal cannot be less than 0")

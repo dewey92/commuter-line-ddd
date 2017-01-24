@@ -22,8 +22,6 @@ object CommandBus extends BaseCommandBus {
   /**
     * Get handler instance of the command
     *
-    * @see http://3x14159265.tumblr.com/post/57543163324/playing-with-scala-reflection
-    *
     * @param handler Name of the handler
     * @return
     */
