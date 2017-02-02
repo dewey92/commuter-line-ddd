@@ -1,6 +1,6 @@
 package dwaspada.krl.trip.domain.model
 
-import dwaspada.krl.trip.domain.exception.CannotTapInException
+import dwaspada.krl.trip.domain.exception.{CannotTapInException, CannotTapOutException}
 import dwaspada.thedaam.domain.AggregateRoot
 
 object Station {
@@ -15,7 +15,11 @@ object Station {
 class Station(val id: StationId, val name: String) extends AggregateRoot {
   val minimumCredit: Int = 12000
 
-  def gateIn(card: Card): Unit = {
+  def gateIn(card: Card, tripChecker: TripChecker): Unit = {
+    if (tripChecker.isCardAlreadyTappedIn(card)) {
+      throw new CannotTapInException("Must tap out first")
+    }
+
     if (card.credit < minimumCredit) {
       throw new CannotTapInException(s"Card credit is less than Rp. $minimumCredit")
     }
@@ -23,8 +27,13 @@ class Station(val id: StationId, val name: String) extends AggregateRoot {
     // Raise event passenger has tapped in
   }
 
-  def gateOut(card: Card, trip: Trip): Unit = {
-    val (distance: Distance, totalFee: Int) = DomainRegistry.distanceFeeCalculator.calculate(trip.fromStationId, id)
+  def gateOut(card: Card, tripChecker: TripChecker, distanceFeeCalculator: DistanceFeeCalculator): Unit = {
+    val trip: Trip = tripChecker.getTripByCard(card) match {
+      case Some(trip: Trip) => trip
+      case None => throw new CannotTapOutException("Card is not registered in the trip")
+    }
+
+    val (distance: Distance, totalFee: Int) = distanceFeeCalculator.calculate(trip.fromStationId, id)
     val beforeCredit = card.credit
 
     card.subtractCredit(totalFee)

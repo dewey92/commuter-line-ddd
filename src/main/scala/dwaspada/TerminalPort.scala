@@ -15,9 +15,9 @@ object TerminalPort {
     val commandLine = readLine("Command: ")
     val commandArray = commandLine.split(" ")
 
-    val command : String = commandArray.head
+    val command: String = commandArray.head
     var station: String = ""
-    var cardId: String = ""
+    var cardId: String  = ""
     var cardCredit: Int = 0
 
     if (command == "exit" || command == "quit") return

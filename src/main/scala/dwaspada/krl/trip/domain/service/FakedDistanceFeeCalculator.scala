@@ -11,6 +11,11 @@ class FakedDistanceFeeCalculator extends DistanceFeeCalculator {
   def calculate(from: StationId, to: StationId): (Distance, Int) = {
     // TODO: distance calculation
     // For now, let's return a faked distance in kilometers
+
+    if (from sameValueAs to) {
+      (Distance(0, LengthUnit("KM")), 2000)
+    }
+
     val distance = Distance(29.8, LengthUnit("KM"))
 
     (distance, calculateFeeFromDistance(distance))

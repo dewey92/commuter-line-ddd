@@ -1,6 +1,8 @@
 package dwaspada.krl.trip.infrastructure.persistence
 
+import dwaspada.krl.trip.domain.exception.InvalidStationException
 import dwaspada.krl.trip.domain.model.{Station, StationId, StationRepository}
+
 import scala.collection.immutable
 
 class InMemoryStationRepository extends StationRepository {
@@ -14,4 +16,11 @@ class InMemoryStationRepository extends StationRepository {
   override def findAll: immutable.Map[String, Station] = stations
 
   override def findById(stationId: StationId):  Option[Station] = stations.get(stationId.id)
+
+  override def findOrFailById(stationId: StationId): Station = {
+    findById(stationId) match {
+      case Some(station: Station) => station
+      case None => throw new InvalidStationException("Invalid Station")
+    }
+  }
 }
