@@ -1,25 +1,28 @@
 package dwaspada.krl.trip.domain.model
 
-case class Card(id: CardId, var credit: Int = 0) {
-  require(id != null, "Card ID must not be null")
+import dwaspada.thedaam.domain.ValueObject
 
-  def addCredit(nominal: Int): Unit = {
+case class Card(id: CardId, credit: Int = 0) extends ValueObject[Card] {
+  require(id != null, "Card ID must not be null")
+  require(credit >= 0, "Card credit cannot be less than 0")
+
+  def addCredit(nominal: Int): Card = {
     if (nominal < 0) {
       throw new Exception("Nominal cannot be less than 0")
     }
 
-    credit += nominal
-
-    // After credit addition, we can raise an event
+    Card(id, credit + nominal)
   }
 
-  def subtractCredit(nominal: Int): Unit = {
+  def subtractCredit(nominal: Int): Card = {
     if (nominal < 0) {
       throw new Exception("Nominal cannot be less than 0")
     }
 
-    credit -= nominal
+    Card(id, credit - nominal)
+  }
 
-    // After credit subtraction, we can raise an event
+  override def sameValueAs(other: Card): Boolean = {
+    (other != null) && other.id == id && other.credit == credit
   }
 }

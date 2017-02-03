@@ -1,10 +1,10 @@
 package dwaspada.thedaam.domain
 
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable
 
 object DomainEventPublisher {
-  var domainEvents: ListBuffer[DomainEvent] = ListBuffer()
-  var domainEventListeners: Map[String, DomainEventListener] = Map()
+  val domainEvents: mutable.ListBuffer[DomainEvent] = mutable.ListBuffer()
+  val domainEventListeners: mutable.Map[String, DomainEventListener] = mutable.Map()
 
   def raise(domainEvent: DomainEvent): Unit = {
     domainEvents append domainEvent
@@ -18,17 +18,19 @@ object DomainEventPublisher {
     ) {
       eventListener.handleEvent(domainEvent)
     }
+
+    reset()
   }
 
   def reset(): Unit = {
-    domainEvents = ListBuffer[DomainEvent]()
+    domainEvents.clear
   }
 
   def subscribe(listener: DomainEventListener): Unit = {
     val listenerClass = listener.getClass.getName
 
     if (! domainEventListeners.isDefinedAt(listenerClass)) {
-      domainEventListeners += listenerClass -> listener
+      domainEventListeners.put(listenerClass, listener)
     }
   }
 }

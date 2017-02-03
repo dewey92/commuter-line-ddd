@@ -36,13 +36,12 @@ class Station(val id: StationId, val name: String) extends AggregateRoot {
     }
 
     val (distance: Distance, totalFee: Int) = distanceFeeCalculator.calculate(trip.fromStationId, id)
-    val beforeCredit = card.credit
 
-    card.subtractCredit(totalFee)
+    val subtractedCard = card.subtractCredit(totalFee)
 
     trip.completeTrip(id)
 
     // Raise event passenger has tapped out
-    DomainEventPublisher.raise(CardTappedOut(card.copy(), id, distance, totalFee))
+    DomainEventPublisher.raise(CardTappedOut(subtractedCard, id, distance, totalFee))
   }
 }

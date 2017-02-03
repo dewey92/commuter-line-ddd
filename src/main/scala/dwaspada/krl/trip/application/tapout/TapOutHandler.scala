@@ -13,7 +13,8 @@ class TapOutHandler extends CommandHandler[TapOutCommand] {
     try {
       station.gateOut(card, DomainRegistry.tripChecker, DomainRegistry.distanceFeeCalculator)
 
-      DomainRegistry.tripRepository.remove(Trip(command.cardId, command.stationId))
+      val trip = Trip(command.cardId, command.stationId)
+      DomainRegistry.tripRepository.remove(trip)
 
       // Publish events
       DomainEventPublisher.publish()
