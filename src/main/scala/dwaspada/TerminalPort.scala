@@ -1,10 +1,13 @@
 package dwaspada
 
+import dwaspada.krl.shared.eventlistener.{PrintTapInCredentials, PrintTapOutCredentials}
+
 import scala.io.StdIn.readLine
 import dwaspada.krl.trip.application.tapin.TapInCommand
 import dwaspada.krl.trip.application.tapout.TapOutCommand
 import dwaspada.krl.trip.domain.model.{CardId, StationId}
 import dwaspada.thedaam.application.CommandBus
+import dwaspada.thedaam.domain.DomainEventPublisher
 
 /**
   * Simple port for terminal. Not a fancy one, but enough to
@@ -12,6 +15,14 @@ import dwaspada.thedaam.application.CommandBus
   */
 object TerminalPort {
   def main(args: Array[String]): Unit = {
+    // Register all domain event listeners first
+    DomainEventPublisher.subscribe(new PrintTapInCredentials)
+    DomainEventPublisher.subscribe(new PrintTapOutCredentials)
+
+    listenToInput()
+  }
+
+  def listenToInput(): Unit = {
     val commandLine = readLine("Command: ")
     val commandArray = commandLine.split(" ")
 
@@ -35,10 +46,10 @@ object TerminalPort {
 
     command match {
       case "tapin"  => CommandBus.handle(TapInCommand(new StationId(station), new CardId(cardId), cardCredit))
-      case "taoput" => CommandBus.handle(TapOutCommand(new StationId(station), new CardId(cardId), cardCredit))
+      case "tapout" => CommandBus.handle(TapOutCommand(new StationId(station), new CardId(cardId), cardCredit))
       case _        => throw new Exception("INVALID COMMAND")
     }
 
-    main(args)
+    listenToInput()
   }
 }

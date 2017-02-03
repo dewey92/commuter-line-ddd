@@ -1,7 +1,8 @@
 package dwaspada.krl.trip.domain.model
 
+import dwaspada.krl.trip.domain.event.{CardTappedIn, CardTappedOut}
 import dwaspada.krl.trip.domain.exception.{CannotTapInException, CannotTapOutException}
-import dwaspada.thedaam.domain.AggregateRoot
+import dwaspada.thedaam.domain.{AggregateRoot, DomainEventPublisher}
 
 object Station {
   def apply(id: StationId, name: String): Station = {
@@ -25,6 +26,7 @@ class Station(val id: StationId, val name: String) extends AggregateRoot {
     }
 
     // Raise event passenger has tapped in
+    DomainEventPublisher.raise(CardTappedIn(card.id, id))
   }
 
   def gateOut(card: Card, tripChecker: TripChecker, distanceFeeCalculator: DistanceFeeCalculator): Unit = {
@@ -40,9 +42,7 @@ class Station(val id: StationId, val name: String) extends AggregateRoot {
 
     trip.completeTrip(id)
 
-    println(s"TOTAL FEE: Rp.$totalFee with a distance of ${distance.distance}${distance.lengthUnit.unit}")
-    println(s"Your credit is subtracted. Rp.$beforeCredit - Rp.$totalFee = Rp.${card.credit}")
-
     // Raise event passenger has tapped out
+    DomainEventPublisher.raise(CardTappedOut(card.copy(), id, distance, totalFee))
   }
 }
