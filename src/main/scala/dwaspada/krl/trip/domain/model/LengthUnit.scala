@@ -6,7 +6,5 @@ case class LengthUnit(unit: String) extends ValueObject[LengthUnit] {
   val validUnits = List("KM", "M")
   require(validUnits.contains(unit), "Invalid length unit")
 
-  override def sameValueAs(other: LengthUnit): Boolean = {
-    other != null && other.unit == unit
-  }
+  override def sameValueAs(other: LengthUnit): Boolean = other.unit == unit
 }

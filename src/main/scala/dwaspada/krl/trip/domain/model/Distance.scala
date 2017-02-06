@@ -7,22 +7,21 @@ case class Distance(distance: Double, lengthUnit: LengthUnit) extends ValueObjec
 
   def toKilometer: Distance = {
     if (lengthUnit.unit == "M") {
-      new Distance(distance / 1000, new LengthUnit("KM"))
+      Distance(distance / 1000, LengthUnit("KM"))
     }
 
-    new Distance(distance, new LengthUnit("KM"))
+    Distance(distance, LengthUnit("KM"))
   }
 
   def toMeter: Distance = {
     if (lengthUnit.unit == "KM") {
-      new Distance(distance * 1000, new LengthUnit("M"))
+      Distance(distance * 1000, LengthUnit("M"))
     }
 
-    new Distance(distance, new LengthUnit("M"))
+    Distance(distance, LengthUnit("M"))
   }
 
   override def sameValueAs(other: Distance): Boolean = {
-    other != null &&
     other.distance == distance &&
     other.lengthUnit.sameValueAs(lengthUnit)
   }

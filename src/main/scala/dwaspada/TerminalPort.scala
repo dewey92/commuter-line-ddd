@@ -28,10 +28,12 @@ object TerminalPort {
     val commandLine = readLine("Command: ")
     val commandArray = commandLine.split(" ")
 
-    val command: String = commandArray.head
+    val command: String = commandArray.headOption.getOrElse {
+      throw new RuntimeException("No available command! Should be one of exit, quit, tapin, and tapout")
+    }
     val params: mutable.Map[String, String] = mutable.Map[String, String]()
 
-    if (command == "exit" || command == "quit") return
+    if (command == "exit" || command == "quit") System.exit(1)
 
     commandArray.tail.foreach { param =>
       val Array(key: String, value: String) = param.split("=")

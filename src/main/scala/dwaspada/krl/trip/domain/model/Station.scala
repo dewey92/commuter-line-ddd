@@ -6,8 +6,7 @@ import dwaspada.thedaam.domain.{AggregateRoot, DomainEventPublisher}
 
 object Station {
   def apply(id: StationId, name: String): Station = {
-    require(id != null, "Station ID must not be null")
-    require(name != null && name.trim.length < 1, "Station name must not be empty")
+    require(name.trim.length < 1, "Station name must not be empty")
 
     new Station(id, name)
   }
@@ -39,7 +38,7 @@ class Station(val id: StationId, val name: String) extends AggregateRoot {
 
     val subtractedCard = card.subtractCredit(totalFee)
 
-    trip.completeTrip(id)
+    trip.complete(id)
 
     // Raise event passenger has tapped out
     DomainEventPublisher.raise(CardTappedOut(subtractedCard, id, distance, totalFee))

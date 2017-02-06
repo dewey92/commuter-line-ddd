@@ -3,7 +3,6 @@ package dwaspada.krl.trip.domain.model
 import dwaspada.thedaam.domain.ValueObject
 
 case class Card(id: CardId, credit: Int = 0) extends ValueObject[Card] {
-  require(id != null, "Card ID must not be null")
   require(credit >= 0, "Card credit cannot be less than 0")
 
   def addCredit(nominal: Int): Card = {

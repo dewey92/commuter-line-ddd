@@ -6,7 +6,7 @@ case class Trip(cardId: CardId, fromStationId: StationId, dateIn: Date = new Dat
   var dateCompleted: Option[Date] = None
   var toStationId: Option[StationId] = None
 
-  def completeTrip(toStation: StationId): Unit = if (! isCompleted) {
+  def complete(toStation: StationId): Unit = if (! isCompleted) {
     dateCompleted = Some(new Date())
     toStationId = Some(toStation)
   }
