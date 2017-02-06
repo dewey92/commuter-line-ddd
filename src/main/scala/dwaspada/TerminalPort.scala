@@ -9,6 +9,8 @@ import dwaspada.krl.trip.domain.model.{CardId, StationId}
 import dwaspada.thedaam.application.CommandBus
 import dwaspada.thedaam.domain.DomainEventPublisher
 
+import scala.collection.mutable
+
 /**
   * Simple port for terminal. Not a fancy one, but enough to
   * show how our application can be accessed by many interfaces
@@ -27,9 +29,7 @@ object TerminalPort {
     val commandArray = commandLine.split(" ")
 
     val command: String = commandArray.head
-    var station: String = ""
-    var cardId: String  = ""
-    var cardCredit: Int = 0
+    val params: mutable.Map[String, String] = mutable.Map[String, String]()
 
     if (command == "exit" || command == "quit") return
 
@@ -37,16 +37,20 @@ object TerminalPort {
       val Array(key: String, value: String) = param.split("=")
 
       key match {
-        case "station" => station = value.trim
-        case "card"    => cardId = value.trim
-        case "credit"  => cardCredit = value.toInt
+        case "station" => params += "station" -> value.trim
+        case "card"    => params += "cardId" -> value.trim
+        case "credit"  => params += "cardCredit" -> value.trim
         case _         => throw new Exception("INVALID INPUT")
       }
     }
 
     command match {
-      case "tapin"  => CommandBus.handle(TapInCommand(new StationId(station), new CardId(cardId), cardCredit))
-      case "tapout" => CommandBus.handle(TapOutCommand(new StationId(station), new CardId(cardId), cardCredit))
+      case "tapin"  => CommandBus.handle(
+        TapInCommand(new StationId(params("station")), new CardId(params("cardId")), params("cardCredit").toInt)
+      )
+      case "tapout" => CommandBus.handle(
+        TapOutCommand(new StationId(params("station")), new CardId(params("cardId")), params("cardCredit").toInt)
+      )
       case _        => throw new Exception("INVALID COMMAND")
     }
 

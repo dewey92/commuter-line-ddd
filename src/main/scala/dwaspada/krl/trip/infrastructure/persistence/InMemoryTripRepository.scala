@@ -4,7 +4,7 @@ import dwaspada.krl.trip.domain.model.{CardId, Trip, TripRepository}
 import scala.collection.mutable
 
 class InMemoryTripRepository extends TripRepository {
-  val trips = mutable.Map[String, Trip]()
+  val trips: mutable.Map[String, Trip] = mutable.Map[String, Trip]()
 
   override def add(trip: Trip): Unit = {
     trips += trip.cardId.id -> trip

@@ -30,6 +30,16 @@ class StationSpec extends FlatSpec with MockFactory {
     }
   }
 
+  /* it should "accept a tap in when credit >= 12000 and user hasn't made a trip" in {
+    val tc = stub[TripChecker]
+    tc.isCardAlreadyTappedIn _ when card returns false
+
+    station.gateIn(card, tc)
+
+    val trip = DomainRegistry.tripRepository.findByCard(card.id).get
+    assert(trip.cardId == card.id && trip.fromStationId == station.id)
+  } */
+
   it should "reject a non-registered card when tapping out" in {
     val tc = stub[TripChecker]
     val dc = stub[DistanceFeeCalculator]
